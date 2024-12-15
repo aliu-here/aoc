@@ -47,35 +47,35 @@ int main()
     for (int i=0; i<rows/2; i++) {
         for (int j=0; j<cols/2; j++) {
             q1count += count_grid[i][j];
-            std::cout << count_grid[i][j] << ' ';
+//            std::cout << count_grid[i][j] << ' ';
         }
-        std::cout << "   ";
+//        std::cout << "   ";
         for (int j=cols/2 + 1; j < cols; j++) {
             q2count += count_grid[i][j];
-            std::cout << count_grid[i][j] << ' ';
+//            std::cout << count_grid[i][j] << ' ';
         }
-        std::cout << '\n';
+//        std::cout << '\n';
     }
     
-    std::cout << '\n';
+//    std::cout << '\n';
 
     long long q3count = 0, q4count = 0;
     for (int i=rows/2 + 1; i<rows; i++) {
         for (int j=0; j<cols/2; j++) {
             q3count += count_grid[i][j];
-            std::cout << count_grid[i][j] << ' ';
+//            std::cout << count_grid[i][j] << ' ';
         }
-        std::cout << "   ";
+//        std::cout << "   ";
         for (int j=cols/2 + 1; j < cols; j++) {
             q4count += count_grid[i][j];
-            std::cout << count_grid[i][j] << ' ';
+//            std::cout << count_grid[i][j] << ' ';
         }
-        std::cout << '\n';
+//        std::cout << '\n';
     }
-    std::cout << "q1count: " << q1count << '\n';
-    std::cout << "q2count: " << q2count << '\n';
-    std::cout << "q3count: " << q3count << '\n';
-    std::cout << "q4count: " << q4count << '\n';
+//    std::cout << "q1count: " << q1count << '\n';
+//    std::cout << "q2count: " << q2count << '\n';
+//    std::cout << "q3count: " << q3count << '\n';
+//    std::cout << "q4count: " << q4count << '\n';
 
     std::cout << "p1: " << q1count * q2count * q3count * q4count << '\n';
 }
