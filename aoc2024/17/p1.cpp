@@ -52,15 +52,14 @@ std::vector<int> run_machine(std::vector<int> program, long long aval, long long
         } else if (program[ip] == BXC) {
             reg_b = reg_b ^ reg_c;
         } else if (program[ip] == OUT) {
-            out.push_back(interp_op % 8);
+            std::cout << interp_op % 8 << ',';
         } else if (program[ip] == BDV) {
             long long denom = std::pow(2, interp_op);
             reg_b = reg_a / denom;
         } else if (program[ip] == CDV) {
             long long denom = std::pow(2, interp_op);
             reg_c = reg_a / denom;
-        }
-        ip += 2;
+        }        ip += 2;
     }
     return out;
 }
@@ -79,12 +78,6 @@ int main()
         program.push_back(throwaway[i] - 48);
     }
 
-    int test_val = 0;
-    while (true) {
-        std::vector<int> output = run_machine(program, test_val, b, c);
-        if (output == program)
-            break;
-        test_val++;
-    }
-    std::cout << test_val << '\n';
+
+    run_machine(program, a, b, c);
 }
