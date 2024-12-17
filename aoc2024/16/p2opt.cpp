@@ -4,7 +4,6 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
-#include <set>
 
 //dijkstra's
 enum dirs {
@@ -19,6 +18,7 @@ struct node {
     long long dist = 2 << 20;
     int dir;
     std::vector<node*> prev = {NULL};
+    bool known_best = 0;
 };
 
 std::array<int, 2> add_vecs(std::array<int, 2> v1, std::array<int, 2> v2)
@@ -48,9 +48,6 @@ int dijkstra_search(std::vector<std::string> grid, int x, int y, char start_dir)
     for (int i=0; i<grid.size(); i++) {
         all_nodes.push_back(std::vector<std::array<node, 4>>(grid[0].size()));
     }
-
-    std::vector<node*> heap;
-
     for (int i=0; i<grid.size(); i++) {
         for (int j=0; j<grid[0].size(); j++) {
             if (grid[i][j] != '#') {
@@ -59,13 +56,15 @@ int dijkstra_search(std::vector<std::string> grid, int x, int y, char start_dir)
                     temp.pos = {i, j};
                     temp.dir = k;
                     all_nodes[i][j][k] = temp;
-                    heap.push_back(&all_nodes[i][j][k]);
                 }
             }
         }
     }
 
     all_nodes[x][y][start_dir].dist = 0;
+    all_nodes[x][y][start_dir].known_best = 1;
+
+    std::vector<node*> heap = {&all_nodes[x][y][start_dir]};
 
     auto cmp = [](node* a, node* b) { return a->dist > b->dist; };
 
@@ -78,32 +77,65 @@ int dijkstra_search(std::vector<std::string> grid, int x, int y, char start_dir)
 
     while (heap.size() > 0) {
         std::pop_heap(heap.begin(), heap.end());
-        curr_node = *(std::prev(heap.end()));
+        curr_node = heap.back();
+        curr_node->known_best = true;
         if (grid[curr_node->pos[0]][curr_node->pos[1]] == 'E')
             break;
-        heap.erase(std::prev(heap.end()));
-        std::array<int, 2> continuing_pos = add_vecs(curr_node->pos, moves[curr_node->dir]);
-        if (all_nodes[continuing_pos[0]][continuing_pos[1]][curr_node->dir].dist > curr_node->dist + 1) {
-            all_nodes[continuing_pos[0]][continuing_pos[1]][curr_node->dir].prev = {curr_node};
-            all_nodes[continuing_pos[0]][continuing_pos[1]][curr_node->dir].dist = curr_node->dist + 1;
-        } else if (all_nodes[continuing_pos[0]][continuing_pos[1]][curr_node->dir].dist == curr_node->dist + 1) {
-            all_nodes[continuing_pos[0]][continuing_pos[1]][curr_node->dir].prev.push_back(curr_node);
-        }
+        heap.pop_back();
+
 
         int left = (curr_node->dir - 1 + 4) % 4;
-        if (all_nodes[curr_node->pos[0]][curr_node->pos[1]][left].dist > curr_node->dist + 1000) {
-            all_nodes[curr_node->pos[0]][curr_node->pos[1]][left].dist = curr_node->dist + 1000;
-            all_nodes[curr_node->pos[0]][curr_node->pos[1]][left].prev = {curr_node};
-        } else if (all_nodes[curr_node->pos[0]][curr_node->pos[1]][left].dist == curr_node->dist + 1000) {
-            all_nodes[curr_node->pos[0]][curr_node->pos[1]][left].prev.push_back(curr_node);
+        node *left_ptr = &all_nodes[curr_node->pos[0]][curr_node->pos[1]][left];
+        if (std::find(heap.begin(), heap.end(), left_ptr) != heap.end()) {
+            if (left_ptr->dist > curr_node->dist + 1000) {
+                left_ptr->dist = curr_node->dist + 1000;
+                left_ptr->prev = {curr_node};
+            } else if (left_ptr->dist == curr_node->dist + 1000) {
+                left_ptr->prev.push_back(curr_node);
+            }
+        } else if (!left_ptr->known_best) {
+            left_ptr->dist = curr_node->dist + 1000;
+            left_ptr->dir = left;
+            left_ptr->prev = {curr_node};
+            heap.push_back(left_ptr);
         }
 
         int right = (curr_node->dir + 1) % 4;
-        if (all_nodes[curr_node->pos[0]][curr_node->pos[1]][right].dist > curr_node->dist + 1000) {
-            all_nodes[curr_node->pos[0]][curr_node->pos[1]][right].dist = curr_node->dist + 1000;
-            all_nodes[curr_node->pos[0]][curr_node->pos[1]][right].prev = {curr_node};
-        } else if (all_nodes[curr_node->pos[0]][curr_node->pos[1]][right].dist == curr_node->dist + 1000) {
-            all_nodes[curr_node->pos[0]][curr_node->pos[1]][right].prev.push_back(curr_node);
+        node *right_ptr = &all_nodes[curr_node->pos[0]][curr_node->pos[1]][right];
+        if (std::find(heap.begin(), heap.end(), right_ptr) != heap.end()) {
+            if (right_ptr->dist > curr_node->dist + 1000) {
+                right_ptr->dist = curr_node->dist + 1000;
+                right_ptr->prev = {curr_node};
+            } else if (right_ptr->dist == curr_node->dist + 1000) {
+                right_ptr->prev.push_back(curr_node);
+            }
+        } else if (!right_ptr->known_best) {
+            right_ptr->dist = curr_node->dist + 1000;
+            right_ptr->dir = right;
+            right_ptr->prev = {curr_node};
+            heap.push_back(right_ptr);
+        }
+
+        std::array<int, 2> continuing_pos = add_vecs(curr_node->pos, moves[curr_node->dir]);
+
+        if (continuing_pos[0] < 0 || continuing_pos[0] >= grid.size() || \
+            continuing_pos[1] < 0 || continuing_pos[1] >= grid[0].size())
+            continue;
+        if (grid[continuing_pos[0]][continuing_pos[1]] != '#') {
+            node *continued_ptr = &all_nodes[continuing_pos[0]][continuing_pos[1]][curr_node->dir];
+            if (std::find(heap.begin(), heap.end(), continued_ptr) != heap.end()) {
+                if (continued_ptr->dist > curr_node->dist + 1) {
+                    continued_ptr->prev = {curr_node};
+                    continued_ptr->dist = curr_node->dist + 1;
+                } else if (continued_ptr->dist == curr_node->dist + 1) {
+                    continued_ptr->prev.push_back(curr_node);
+                }
+            } else if (!continued_ptr->known_best) {
+                continued_ptr->dist = curr_node->dist + 1;
+                continued_ptr->dir = curr_node->dir;
+                continued_ptr->prev = {curr_node};
+                heap.push_back(continued_ptr);
+            }
         }
 
         std::make_heap(heap.begin(), heap.end(), cmp);
