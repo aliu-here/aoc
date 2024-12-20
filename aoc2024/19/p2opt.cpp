@@ -21,22 +21,22 @@ std::vector<std::string> split(const std::string& s, const std::string& delimite
 }
 
 std::unordered_map<std::string, long long> memoize;
-std::string concated = "";
+std::vector<std::string> poss_patterns;
 
-long long pattern_creatable(std::string to_create, std::vector<std::string> &poss_patterns);
+long long pattern_creatable(std::string to_create);
 
-long long call_pattern_creatable(std::string to_create, std::vector<std::string> &poss_patterns)
+long long call_pattern_creatable(std::string to_create)
 {
-    if (memoize.find(to_create + concated) == memoize.end()) {
-        long long result = pattern_creatable(to_create, poss_patterns);
-        memoize[to_create + concated] = result;
+    if (memoize.find(to_create) == memoize.end()) {
+        long long result = pattern_creatable(to_create);
+        memoize[to_create] = result;
         return result;
     } else {
-        return memoize[to_create + concated];
+        return memoize[to_create];
     }
 }
 
-long long pattern_creatable(std::string to_create, std::vector<std::string> &poss_patterns)
+long long pattern_creatable(std::string to_create)
 {
     if (to_create == "")
         return true;
@@ -58,7 +58,7 @@ long long pattern_creatable(std::string to_create, std::vector<std::string> &pos
 //        std::cout << "works: " << works << '\n';
 
         if (works) {
-            output += call_pattern_creatable(to_create.substr(pattern.size(), to_create.size() - pattern.size()), poss_patterns);
+            output += call_pattern_creatable(to_create.substr(pattern.size(), to_create.size() - pattern.size()));
         }
     }
     return output;
@@ -69,17 +69,13 @@ int  main()
     std::ifstream in("input.txt");
     std::string line;
     getline(in, line);
-    std::vector<std::string> subpatterns = split(line, ", ");
-
-    for (std::string pattern : subpatterns)
-        concated += pattern;
-
+    poss_patterns = split(line, ", ");
 
     getline(in, line);
     long long p2 = 0;
     while (getline(in, line)) {
-        p2 += call_pattern_creatable(line, subpatterns);
-        std::cout << "line done\n";
+        p2 += call_pattern_creatable(line);
+//        std::cout << "line done\n";
     }
     std::cout << p2 << '\n';
 }
