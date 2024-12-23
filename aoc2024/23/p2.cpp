@@ -19,6 +19,7 @@ std::vector<std::string> find_overlaps(std::vector<std::string> a, std::vector<s
             if (a_str == b_str)
                 out.push_back(a_str);
         }
+ 
     }
     return out;
 }
@@ -53,11 +54,9 @@ int main()
     int count = 0;
     for (auto pair : network) {
         node curr_cmp = pair.second;
-        if (curr_cmp.name[0] != 't')
-            continue;
-        std::cout << curr_cmp.name << '\n';
+//        std::cout << curr_cmp.name << '\n';
         for (std::string neighbor : curr_cmp.neighbors) {
-            std::cout << neighbor << '\n';
+//            std::cout << neighbor << '\n';
             for (std::string shared : find_overlaps(network[neighbor].neighbors, curr_cmp.neighbors)) {
                 std::set<std::string> temp;
                 temp.insert(curr_cmp.name); temp.insert(neighbor); temp.insert(shared);
@@ -89,6 +88,7 @@ int main()
 
     std::vector<std::string> out(cycles.begin()->begin(), cycles.begin()->end());
     std::sort(out.begin(), out.end());
+    std::cout << "p2: ";
     for (std::string computer : out) {
         std::cout << computer << ',';
     }
