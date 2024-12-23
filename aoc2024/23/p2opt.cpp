@@ -44,7 +44,7 @@ std::unordered_map<std::string, node> bron_kerbosch(std::unordered_map<std::stri
     if (output.size() > final_out.size())
         final_out = output;
 
-    P.erase(pair.first);
+    P.erase(pair.first); // no need for set X since removing from P already does the job
     return final_out;
 }
 
