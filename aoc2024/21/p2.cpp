@@ -56,16 +56,8 @@ long long call_moves_required(int start_pos, int end_pos, int depth)
 
 long long moves_required(int start_pos, int end_pos, int depth)
 {
-    std::string indent;
-    for (int i=0; i<3-depth; i++) {
-        indent += '\t';
-    }
-    std::cout << indent << "moves_required; depth " << depth << '\n';
     std::array<int, 2> to_move = sub_vecs(dir_keypad_positions[end_pos], dir_keypad_positions[start_pos]);
     std::vector<int> next_moves = {4};
-    std::cout << indent << "to_move: ";
-    print_vec(to_move);
-    std::cout << indent << "prev: " << idx_to_letters[start_pos] << ", next: " << idx_to_letters[end_pos] << '\n';
     int x_diff = to_move[0], y_diff = to_move[1];
     int x_move = -1, y_move = -1;
     if (x_diff != 0)
@@ -73,7 +65,6 @@ long long moves_required(int start_pos, int end_pos, int depth)
     if (y_diff != 0)
         y_move = (y_diff > 0) ? UP : DOWN;
 
-    std::cout << indent << x_move << ", " << y_move << '\n';
 
     x_diff = std::abs(x_diff);
     y_diff = std::abs(y_diff);
@@ -106,11 +97,6 @@ long long moves_required(int start_pos, int end_pos, int depth)
     
     long long out = 0;
 
-    std::cout << indent;
-    for (auto x : next_moves)
-        std::cout << idx_to_letters[x];
-    std::cout << '\n';
-
     if (depth == 1)
         return next_moves.size() - 1;
 
@@ -118,92 +104,6 @@ long long moves_required(int start_pos, int end_pos, int depth)
         out += call_moves_required(next_moves[i - 1], next_moves[i], depth - 1);
     }
 
-    return out;
-}
-
-std::string create_keypad_moves(std::string lower_level_moves) {
-    std::string out;
-    int curr_pos = 4;
-    for (char move : lower_level_moves) {
-        int next_pos;
-        if (move  == 'v')
-            next_pos = DOWN;
-        else if (move == '<')
-            next_pos = LEFT;
-        else if (move == '>')
-            next_pos = RIGHT;
-        else if (move == '^')
-            next_pos = UP;
-        else if (move == 'A')
-            next_pos = 4;
-        std::array<int, 2> to_move = sub_vecs(dir_keypad_positions[next_pos], dir_keypad_positions[curr_pos]);
-        int x_diff = to_move[0], y_diff = to_move[1];
-        int x_move = -1, y_move = -1;
-        if (x_diff != 0)
-            x_move = (x_diff < 0) ? LEFT : RIGHT;
-        if (y_diff != 0)
-            y_move = (y_diff > 0) ? UP : DOWN;       
-        
-
-/*        std::cout << "intermediate pos if y first: ";
-        print_vec(add_vecs(dir_keypad_positions[curr_pos], scalar_mult(moves[y_move], y_diff)));
-        std::cout << "intermediate pos if x first: ";
-        print_vec(add_vecs(dir_keypad_positions[curr_pos], scalar_mult(moves[y_move], y_diff)));
-        std::cout << "curr_pos: ";
-        print_vec(dir_keypad_positions[curr_pos]);
-        std::cout << "next_pos: ";
-        print_vec(dir_keypad_positions[next_pos]);
-        std::cout << "manhattan distance from A to x_move: " << manhattan_dist(dir_keypad_positions[4], dir_keypad_positions[x_move]) << '\n';
-        std::cout << "manhattan distance from A to y_move: " << manhattan_dist(dir_keypad_positions[4], dir_keypad_positions[y_move]) << '\n';
-        std::cout << "x_move: " << x_move << '\n';
-        std::cout << "y_move: " << y_move << '\n';
-        std::cout << "x_diff: " << x_diff << '\n';
-        std::cout << "y_diff: " << y_diff << '\n';
-        std::cout << "x_first: " << x_first << '\n'; */
-        x_diff = std::abs(x_diff);
-        y_diff = std::abs(y_diff);
-//        std::cout << '\n';
-        bool x_first = (y_move == -1); // if true, then x_first must be true
-        if (!x_first) {
-            if (x_move != -1 &&
-                manhattan_dist(dir_keypad_positions[4], dir_keypad_positions[x_move]) > manhattan_dist(dir_keypad_positions[4], dir_keypad_positions[y_move]) && //next layer down;
-                std::find(dir_keypad_positions.begin(), dir_keypad_positions.end(), add_vecs(dir_keypad_positions[curr_pos], scalar_mult(moves[x_move], x_diff))) != dir_keypad_positions.end()) //and also make sure it doesn't go into illegal areas
-                x_first = true;
-            if (x_move != -1 &&
-                std::find(dir_keypad_positions.begin(), dir_keypad_positions.end(), add_vecs(dir_keypad_positions[curr_pos], scalar_mult(moves[y_move], y_diff))) == dir_keypad_positions.end()) //if it doesn't exist
-                x_first = true;
-        }
-
-        if (x_first) {
-            for (int i=0; i<x_diff; i++) {
-                if (x_move == LEFT)
-                    out += '<';
-                if (x_move == RIGHT)
-                    out += '>';
-            }
-            for (int i=0; i<y_diff; i++) {
-                if (y_move == UP)
-                    out += '^';
-                if (y_move == DOWN)
-                    out += 'v';
-            }
-        } else {
-            for (int i=0; i<y_diff; i++) {
-                if (y_move == UP)
-                    out += '^';
-                if (y_move == DOWN)
-                    out += 'v';
-            }
-            for (int i=0; i<x_diff; i++) {
-                if (x_move == LEFT)
-                    out += '<';
-                if (x_move == RIGHT)
-                    out += '>';
-            }
-        }
-        out += 'A';
-        curr_pos = next_pos;
-    }
     return out;
 }
 
@@ -226,17 +126,8 @@ long long solve(std::string to_get)
             y_move = (y_diff > 0) ? UP : DOWN;
 
 
-/*        std::cout << "curr_kp_1_pos: ";
-        print_vec(keypad_1_positions[curr_kp_1_pos]);
-        std::cout << "next_kp_1_pos: ";
-        print_vec(keypad_1_positions[next_kp_1_pos]);
-        std::cout << "x_move: " << x_move << '\n';
-        std::cout << "y_move: " << y_move << '\n';
-        std::cout << "x_diff: " << x_diff << '\n';
-        std::cout << "y_diff: " << y_diff << '\n';*/
         x_diff = std::abs(x_diff);
         y_diff = std::abs(y_diff);
-//        std::cout << '\n';
 
         bool x_first = (y_move == -1); // if true, then x_first must be true
         if (!x_first) {
@@ -244,15 +135,10 @@ long long solve(std::string to_get)
                 manhattan_dist(dir_keypad_positions[4], dir_keypad_positions[x_move]) > manhattan_dist(dir_keypad_positions[4], dir_keypad_positions[y_move]) && //next layer down;
                 std::find(keypad_1_positions.begin(), keypad_1_positions.end(), add_vecs(keypad_1_positions[curr_kp_1_pos], scalar_mult(moves[x_move], x_diff))) != keypad_1_positions.end()) { //and also make sure it doesn't go into illegal areas
                 x_first = true;
-//                std::cout << "x moves first: ";
-//                print_vec(moves[x_move]);
             } if (x_move != -1 && 
                 std::find(keypad_1_positions.begin(), keypad_1_positions.end(), add_vecs(keypad_1_positions[curr_kp_1_pos], scalar_mult(moves[y_move], y_diff))) == keypad_1_positions.end()) { //if it doesn't exist
                 x_first = true;
             }
-//            std::cout << "manhattan dist of horizontal move: " << manhattan_dist(dir_keypad_positions[4], dir_keypad_positions[x_move]) << ", manhattan dist of vertical move: " << manhattan_dist(dir_keypad_positions[4], dir_keypad_positions[y_move]) << '\n';
-//            print_vec(add_vecs(keypad_1_positions[curr_kp_1_pos], scalar_mult(moves[x_move], x_diff)));
-//            print_vec(scalar_mult(moves[x_move], x_diff));
         }
 
 
@@ -286,7 +172,6 @@ long long solve(std::string to_get)
         kp_2 += 'A';
         curr_kp_1_pos = next_kp_1_pos;
     }
-    std::cout << "kp_2: " << kp_2 << '\n';
     long long out = 0;
     int prev_pos = 4;
     for (int i=1; i<kp_2.size(); i++) {
@@ -304,7 +189,6 @@ long long solve(std::string to_get)
         out += call_moves_required(prev_pos, next_pos, 25);
         prev_pos = next_pos;
     }
-    std::cout << "out: " << out << '\n';
     return std::stoi(to_get.substr(0, to_get.size() - 1)) * out;
 }
 
