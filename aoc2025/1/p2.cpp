@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include <fstream>
 
 int main()
@@ -10,15 +9,17 @@ int main()
     int count = 0;
     while (getline(in, line)) {
         int val = stoi(line.substr(1));
+
         if (line[0] == 'L') {
+            count += (val + (100 - dial) % 100) / 100;
             dial -= val;
         } else {
+            count += (val + dial) / 100;
             dial += val;
         }
-        dial = (dial + 10000000) % 100;
-        if (dial == 0) {
-            count++;
-        }
+        dial = (dial + 1000000000) % 100; // big number so if really big left rotation it still mods correctly
+
+        std::cout << line << ' ' << count << '\n';
     }
     std::cout << count << '\n';
 }
