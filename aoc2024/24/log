@@ -1,0 +1,225 @@
+gate evaluated: y38 AND x38 -> srk
+gate evaluated: y25 AND x25 -> sth
+gate evaluated: x08 AND y08 -> kmm
+gate evaluated: x35 AND y35 -> vss
+gate evaluated: x14 AND y14 -> nvj
+gate evaluated: x30 AND y30 -> fqm
+gate evaluated: x18 AND y18 -> kgg
+gate evaluated: x23 XOR y23 -> smg
+gate evaluated: y36 XOR x36 -> sfh
+gate evaluated: y24 AND x24 -> njq
+gate evaluated: x20 AND y20 -> hkt
+gate evaluated: x36 AND y36 -> dcq
+gate evaluated: y17 AND x17 -> wvs
+gate evaluated: y09 XOR x09 -> wpr
+gate evaluated: y38 XOR x38 -> ccw
+gate evaluated: x02 AND y02 -> (first and 02) rfb
+gate evaluated: y06 XOR x06 -> fwp
+gate evaluated: y13 AND x13 -> vgh
+gate evaluated: y19 AND x19 -> dwn
+gate evaluated: x03 AND y03 -> tjp
+gate evaluated: x16 AND y16 -> gjg
+gate evaluated: y06 AND x06 -> jdp
+gate evaluated: x22 AND y22 -> cnp
+gate evaluated: y21 XOR x21 -> hvt
+gate evaluated: x29 AND y29 -> nfp
+gate evaluated: x10 AND y10 -> psb
+gate evaluated: y05 XOR x05 -> mdv
+gate evaluated: y27 XOR x27 -> wnw
+gate evaluated: y39 AND x39 -> bnj
+gate evaluated: y41 XOR x41 -> nsk
+gate evaluated: x32 XOR y32 -> mfq
+gate evaluated: x00 AND y00 -> (carry from 00) mjh
+gate evaluated: x04 XOR y04 -> hcs
+gate evaluated: y33 AND x33 -> fjr
+gate evaluated: y27 AND x27 -> tqj
+gate evaluated: y42 XOR x42 -> dvc
+gate evaluated: x18 XOR y18 -> pfb
+gate evaluated: x25 XOR y25 -> qgb
+gate evaluated: x03 XOR y03 -> csd
+gate evaluated: y40 XOR x40 -> qbn
+gate evaluated: y10 XOR x10 -> hwg
+gate evaluated: x01 AND y01 -> (first AND 01)
+gate evaluated: x15 XOR y15 -> kmr
+gate evaluated: x07 XOR y07 -> rvj
+gate evaluated: x16 XOR y16 -> cmj
+gate evaluated: y05 AND x05 -> mgs
+gate evaluated: y11 XOR x11 -> bcw
+gate evaluated: y40 AND x40 -> cbm
+gate evaluated: x30 XOR y30 -> fmw
+gate evaluated: x17 XOR y17 -> fsf
+gate evaluated: y44 XOR x44 -> vfd
+gate evaluated: x13 XOR y13 -> fhp
+gate evaluated: y28 AND x28 -> psg
+gate evaluated: x37 XOR y37 -> djn
+gate evaluated: x31 AND y31 -> rrs
+gate evaluated: y14 XOR x14 -> rvd
+gate evaluated: x22 XOR y22 -> khb
+gate evaluated: y26 AND x26 -> bwv
+gate evaluated: y37 AND x37 -> trf
+gate evaluated: x12 AND y12 -> qcg
+gate evaluated: x23 AND y23 -> knh
+gate evaluated: x41 AND y41 -> bvn
+gate evaluated: y32 AND x32 -> pjn
+gate evaluated: x42 AND y42 -> pcp
+gate evaluated: y28 XOR x28 -> nbm
+gate evaluated: x08 XOR y08 -> gkq
+gate evaluated: y20 XOR x20 -> qkq
+gate evaluated: x04 AND y04 -> grc
+gate evaluated: y00 XOR x00 -> z00; correct
+gate evaluated: y34 AND x34 -> mqg
+gate evaluated: x11 AND y11 -> grb
+gate evaluated: y34 XOR x34 -> bhs
+gate evaluated: y09 AND x09 -> z09
+gate evaluated: x12 XOR y12 -> mfk
+gate evaluated: y39 XOR x39 -> hkr
+gate evaluated: x31 XOR y31 -> rvc
+gate evaluated: y01 XOR x01 -> (first xor 01) rdj
+gate evaluated: (first xor 01) rdj AND (carry from 00) mjh -> tqp
+gate evaluated: (first AND 01) OR tqp -> (carry from 01) fhf
+gate evaluated: (first xor 01) rdj XOR (carry from 00) mjh -> z01; correct
+gate evaluated: y07 AND x07 -> qnq
+gate evaluated: x29 XOR y29 -> wrr
+gate evaluated: y33 XOR x33 -> hwt
+gate evaluated: x19 XOR y19 -> csn
+gate evaluated: y24 XOR x24 -> tnm
+gate evaluated: x02 XOR y02 -> fht
+gate evaluated: fht XOR (carry from 01) fhf -> z02; correct
+gate evaluated: y44 AND x44 -> tdt
+gate evaluated: x43 AND y43 -> khg
+gate evaluated: y15 AND x15 -> tmm
+gate evaluated: x35 XOR y35 -> tms
+gate evaluated: fht AND (carry from 01) fhf -> qtr; correct
+gate evaluated: (first and 02) rfb OR qtr -> (carry bit from 02) kbq
+gate evaluated: (carry bit from 02) kbq AND csd -> tdk; correct
+gate evaluated: tjp OR tdk -> (carry bit from 03) trq; correct
+gate evaluated: csd XOR (carry bit from 02) kbq -> z03
+gate evaluated: hcs XOR (carry bit from 03) trq -> z04
+gate evaluated: (carry bit from 03) trq AND hcs -> jwd
+gate evaluated: grc OR jwd -> (carry bit from 04) mmc
+gate evaluated: (carry bit from 04) mmc XOR mdv -> z05
+gate evaluated: (carry bit from 04) mmc AND mdv -> fks
+gate evaluated: fks OR mgs -> (carry bit from 05) fww
+gate evaluated: fwp AND (carry bit from 05) fww -> qjk
+gate evaluated: (carry bit from 05) fww XOR fwp -> z06
+gate evaluated: y21 AND x21 -> nvr
+gate evaluated: y43 XOR x43 -> npv
+gate evaluated: qjk OR jdp -> (carry bit from 06) fwg
+gate evaluated: (carry bit from 06) fwg XOR rvj -> z07
+gate evaluated: rvj AND (carry bit from 06) fwg -> bqs
+gate evaluated: bqs OR qnq -> (carry bit from 07) qbf
+gate evaluated: gkq XOR (carry bit from 07) qbf -> z08
+gate evaluated: (carry bit from 07) qbf AND gkq -> thk
+gate evaluated: kmm OR thk -> (carry bit from 08) jnn
+gate evaluated: (carry bit from 08) jnn AND wpr -> hvk
+gate evaluated: (carry bit from 08) jnn XOR wpr -> rkf
+gate evaluated: rkf OR hvk -> (carry bit from 09) tcs
+gate evaluated: (carry bit from 09) tcs XOR hwg -> z10
+gate evaluated: (carry bit from 09) tcs AND hwg -> pjf
+gate evaluated: psb OR pjf -> (carry bit from 10) whj
+gate evaluated: bcw XOR (carry bit from 10) whj -> z11
+gate evaluated: (carry bit from 10) whj AND bcw -> ghk
+gate evaluated: ghk OR grb -> (carry bit from 11) pwh
+gate evaluated: mfk XOR (carry bit from 11) pwh -> z12
+gate evaluated: mfk AND (carry bit from 11) pwh -> wpw
+gate evaluated: qcg OR wpw -> (carry bit from 12) kvb
+gate evaluated: (carry bit from 12) kvb AND fhp -> dhk
+gate evaluated: vgh OR dhk -> (carry bit from 13) kfp
+gate evaluated: fhp XOR (carry bit from 12) kvb -> z13
+gate evaluated: rvd XOR (carry bit from 13) kfp -> z14
+gate evaluated: (carry bit from 13) kfp AND rvd -> qmp
+gate evaluated: qmp OR nvj -> (carry bit from 14) bqn
+gate evaluated: (carry bit from 14) bqn XOR kmr -> z15
+gate evaluated: kmr AND (carry bit from 14) bqn -> jrw
+gate evaluated: jrw OR tmm -> (carry bit from 15) htw
+gate evaluated: cmj AND (carry bit from 15) htw -> fpt
+gate evaluated: cmj XOR (carry bit from 15) htw -> z16
+gate evaluated: gjg OR fpt -> (carry bit from 16) rsp
+gate evaluated: (carry bit from 16) rsp AND fsf -> wsq
+gate evaluated: wsq OR wvs -> (carry bit from 17) hrn
+gate evaluated: (carry bit from 17) hrn XOR pfb -> z18
+gate evaluated: pfb AND (carry bit from 17) hrn -> rbc
+gate evaluated: rbc OR kgg -> (carry bit from 18) jqw
+gate evaluated: csn XOR (carry bit from 18) jqw -> z19
+gate evaluated: csn AND (carry bit from 18) jqw -> skp
+gate evaluated: dwn OR skp -> (carry bit from 19) stj
+gate evaluated: qkq AND (carry bit from 19) stj -> z20
+gate evaluated: (carry bit from 19) stj XOR qkq -> jgb
+gate evaluated: fsf XOR (carry bit from 16) rsp -> z17
+gate evaluated: jgb OR hkt -> (carry bit from 20) bfp
+gate evaluated: hvt AND (carry bit from 20) bfp -> shc
+gate evaluated: (carry bit from 20) bfp XOR hvt -> z21
+gate evaluated: shc OR nvr -> (carry bit from 21) qtq
+gate evaluated: khb AND (carry bit from 21) qtq -> dbc
+gate evaluated: cnp OR dbc -> (carry bit from 22) hrk
+gate evaluated: smg XOR (carry bit from 22) hrk -> z23
+gate evaluated: khb XOR (carry bit from 21) qtq -> z22
+gate evaluated: (carry bit from 22) hrk AND smg -> vvb
+gate evaluated: knh OR vvb -> (carry bit from 23) kkp
+gate evaluated: (carry bit from 23) kkp AND tnm -> jnh
+gate evaluated: jnh OR njq -> z24
+gate evaluated: tnm XOR (carry bit from 23) kkp -> (carry bit from 24) vcg
+gate evaluated: (carry bit from 24) vcg AND qgb -> rss
+gate evaluated: sth OR rss -> (carry bit from 25) qcw
+gate evaluated: qgb XOR (carry bit from 24) vcg -> z25
+gate evaluated: y26 XOR x26 -> fmd
+gate evaluated: fmd XOR (carry bit from 25) qcw -> z26
+gate evaluated: fmd AND (carry bit from 25) qcw -> fwb
+gate evaluated: bwv OR fwb -> (carry bit from 26) mpd
+gate evaluated: (carry bit from 26) mpd AND wnw -> hmk
+gate evaluated: hmk OR tqj -> (carry bit from 27) tff
+gate evaluated: (carry bit from 27) tff AND nbm -> jgd
+gate evaluated: (carry bit from 26) mpd XOR wnw -> z27
+gate evaluated: psg OR jgd -> (carry bit from 28) dcj
+gate evaluated: (carry bit from 28) dcj AND wrr -> jkm
+gate evaluated: nbm XOR (carry bit from 27) tff -> z28
+gate evaluated: jkm OR nfp -> (carry bit from 29) ffk
+gate evaluated: fmw AND (carry bit from 29) ffk -> twt
+gate evaluated: (carry bit from 29) ffk XOR fmw -> z30
+gate evaluated: fqm OR twt -> (carry bit from 30) csf
+gate evaluated: (carry bit from 30) csf XOR rrs -> z31
+gate evaluated: (carry bit from 30) csf AND rrs -> pgq
+gate evaluated: rvc OR pgq -> nsm
+gate evaluated: nsm XOR mfq -> z32
+gate evaluated: mfq AND nsm -> wwj
+gate evaluated: wwj OR pjn -> njd
+gate evaluated: njd XOR hwt -> z33
+gate evaluated: njd AND hwt -> ppm
+gate evaluated: ppm OR fjr -> fsn
+gate evaluated: bhs XOR fsn -> z34
+gate evaluated: fsn AND bhs -> vpc
+gate evaluated: vpc OR mqg -> wbm
+gate evaluated: tms AND wbm -> nkn
+gate evaluated: vss OR nkn -> bbq
+gate evaluated: sfh AND bbq -> stg
+gate evaluated: tms XOR wbm -> z35
+gate evaluated: dcq OR stg -> wmj
+gate evaluated: wmj AND djn -> gsj
+gate evaluated: wmj XOR djn -> z37
+gate evaluated: gsj OR trf -> wqq
+gate evaluated: wqq AND ccw -> rtf
+gate evaluated: srk OR rtf -> rsg
+gate evaluated: rsg XOR hkr -> z39
+gate evaluated: hkr AND rsg -> mhh
+gate evaluated: mhh OR bnj -> pst
+gate evaluated: pst AND qbn -> jjn
+gate evaluated: cbm OR jjn -> nfn
+gate evaluated: nfn AND nsk -> jwb
+gate evaluated: bvn OR jwb -> qkn
+gate evaluated: qkn AND dvc -> kff
+gate evaluated: pcp OR kff -> tkv
+gate evaluated: tkv AND npv -> wkn
+gate evaluated: khg OR wkn -> pjw
+gate evaluated: vfd XOR pjw -> z44
+gate evaluated: dvc XOR qkn -> z42
+gate evaluated: nsk XOR nfn -> z41
+gate evaluated: vfd AND pjw -> qpb
+gate evaluated: qpb OR tdt -> z45
+gate evaluated: qbn XOR pst -> z40
+gate evaluated: tkv XOR npv -> z43
+gate evaluated: (carry bit from 28) dcj XOR wrr -> z29
+gate evaluated: sfh XOR bbq -> z36
+gate evaluated: wqq XOR ccw -> z38
+wire count: 312
+1010011100010001001101000010100010010011001110
+p1: 45923082839246
