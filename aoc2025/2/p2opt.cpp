@@ -2,7 +2,6 @@
 #include <vector>
 #include <fstream>
 #include <unordered_set>
-#include <cmath>
 
 #include <chrono>
 
@@ -68,8 +67,18 @@ long long repeat_val(int repeat_count, int repeat_len) {
     return (pow10(repeat_count * repeat_len) - 1) / (pow10(repeat_len) - 1);
 } 
 
-long long sum_invalid_to(std::string x, long long val) {
-    int log = x.length();
+int ceil_log10(long long val) {
+    long long tmp = 1;
+    int count = 0;
+    while (tmp <= val) {
+        tmp *= 10;
+        count++;
+    }
+    return count;
+}
+
+long long sum_invalid_to(long long val) {
+    int log = ceil_log10(val);
     long long out = 0;
     for (int i=2; i<=log; i++) {
         int mobius_val = mobius_func(i);
@@ -106,7 +115,7 @@ int main()
     for (std::string range : ranges) {
         std::vector<std::string> bounds = split(range, "-");
         int l_size = bounds[0].size(), r_size = bounds[1].size();
-        out += sum_invalid_to(bounds[1], std::stol(bounds[1]) + 1) - sum_invalid_to(bounds[0], std::stol(bounds[0]));
+        out += sum_invalid_to(std::stol(bounds[1]) + 1) - sum_invalid_to(std::stol(bounds[0]));
     }
     auto end = std::chrono::steady_clock::now();
     std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us " << '\n';
