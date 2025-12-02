@@ -17,9 +17,9 @@ int main()
             count += (val + dial) / 100;
             dial += val;
         }
-        dial = (dial + 1000000000) % 100; // big number so if really big left rotation it still mods correctly
+        dial = (dial + 1000000) % 100; // big number so if really big left rotation it still mods correctly
 
-        std::cout << line << ' ' << count << '\n';
+//        std::cout << line << ' ' << count << '\n';
     }
     std::cout << count << '\n';
 }
