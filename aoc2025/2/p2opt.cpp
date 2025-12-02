@@ -2,6 +2,9 @@
 #include <vector>
 #include <fstream>
 #include <unordered_set>
+#include <cmath>
+
+#include <chrono>
 
 std::vector<std::string> split(const std::string s, const std::string delimiter) 
 {
@@ -26,11 +29,74 @@ long long pow10(int val) {
     return out;
 }
 
+std::unordered_set<int> primes = {2};
+std::vector<int> mobius_cache = {1};
+int mobius_func(int val) {
+    if (mobius_cache.size() >= val && mobius_cache[val - 1] != -100) {
+        return mobius_cache[val - 1];
+    }
+    int prime_count = 0;
+    int orig_val = val;
+    for (int prime : primes) {
+        int div_count = 0;
+        if (val % prime == 0) {
+            prime_count++;
+        }
+        while (val % prime == 0) {
+            val /= prime;
+            div_count++;
+            if (div_count >= 2) {
+                return 0;
+            }
+        }
+    }
+
+    if (prime_count == 0) {
+        primes.insert(val);
+        prime_count++;
+    }
+    
+    int out = (prime_count % 2) ? -1 : 1;
+    mobius_cache.resize(val, -100);
+
+    mobius_cache[val - 1] = out;
+
+    return (prime_count % 2) ? -1 : 1;
+}
+
+long long repeat_val(int repeat_count, int repeat_len) {
+    return (pow10(repeat_count * repeat_len) - 1) / (pow10(repeat_len) - 1);
+} 
+
+long long sum_invalid_to(std::string x, long long val) {
+    int log = x.length();
+    long long out = 0;
+    for (int i=2; i<=log; i++) {
+        int mobius_val = mobius_func(i);
+        if (mobius_val == 0) {
+            continue;
+        }
+
+        for (int j=1; j<=log / i; j++) {
+            long long repeat_multiplier = repeat_val(i, j);
+            long long div = (val % repeat_val(i, j) == 0) ? val/repeat_multiplier : (val/repeat_multiplier) + 1;
+            long long min_rep = std::min(div, pow10(j));
+            out += (min_rep + pow10(j - 1) - 1) * (min_rep - pow10(j - 1)) * repeat_multiplier * mobius_val;
+        }
+    }
+
+    out /= -2;
+    return out;
+}
+
 int main()
 {
     std::ifstream in("input.txt");
     std::string line;
     getline(in, line);
+
+    auto start = std::chrono::steady_clock::now();
+
     std::vector<std::string> ranges = split(line, ",");
 
     long long out = 0;
@@ -40,43 +106,11 @@ int main()
     for (std::string range : ranges) {
         std::vector<std::string> bounds = split(range, "-");
         int l_size = bounds[0].size(), r_size = bounds[1].size();
-
-        for (int repeat_number = 2; repeat_number <= r_size; repeat_number++) {
-            bool could_work = 0;
-            for (int i=l_size; i<=r_size; i++) {
-                could_work |= (i % repeat_number == 0);
-            }
-            if (!could_work) {
-                continue;
-            }
-            long long l_bound = stol(bounds[0]), r_bound = stol(bounds[1]);
-            long long l_length = l_size, r_length = r_size;
-            if (l_length % repeat_number == repeat_number - 1) {
-                l_bound = pow10(l_length);
-                l_length++;
-            }
-            if (r_length % repeat_number == 1) {
-                r_bound = pow10(r_length - 1) - 1;
-                r_length--;
-            }
-
-            long long half_lower = stol(std::to_string(l_bound).substr(0, l_length / repeat_number)), half_upper = stol(std::to_string(r_bound).substr(0, l_length / repeat_number));
-
-            for (long long i = half_lower; i <= half_upper; i++) {
-                std::string str_val;
-                for (int rep = 0; rep < repeat_number; rep++) {
-                    str_val += std::to_string(i);
-                }
-                long long val = stol(str_val);
-                if (val >= l_bound && val <= r_bound && values.find(val) == values.end()) {
-                    out += val;
-                    values.insert(val);
-                }
-                if (val > r_bound) {
-                    break;
-                }
-            }
-        }
+        out += sum_invalid_to(bounds[1], std::stol(bounds[1]) + 1) - sum_invalid_to(bounds[0], std::stol(bounds[0]));
     }
+    auto end = std::chrono::steady_clock::now();
+    std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us " << '\n';
+
+
     std::cout << out << '\n';
 }
