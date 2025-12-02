@@ -2,6 +2,8 @@
 #include <vector>
 #include <fstream>
 
+#include <chrono>
+
 std::vector<std::string> split(const std::string s, const std::string delimiter) 
 {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
@@ -30,6 +32,9 @@ int main()
     std::ifstream in("input.txt");
     std::string line;
     getline(in, line);
+    
+    auto start = std::chrono::steady_clock::now();
+
     std::vector<std::string> ranges = split(line, ",");
 
     long long out = 0;
@@ -46,17 +51,30 @@ int main()
             r_size--;
         }
 
-        long long half_lower = stol(std::to_string(l_bound).substr(0, l_size / 2)), half_upper = stol(std::to_string(r_bound).substr(0, l_size / 2));
-
-        for (long long i = half_lower; i <= half_upper; i++) {
-            long long val = stol(std::to_string(i) + std::to_string(i));
-            if (val >= l_bound && val <= r_bound) {
-                out += val;
-            }
-            if (val > r_bound) {
-                break;
-            }
+        if (r_bound < l_bound) {
+            continue;
         }
+
+        long long half_lower = stol(std::to_string(l_bound).substr(0, l_size / 2)), half_upper = stol(std::to_string(r_bound).substr(0, r_size / 2));
+
+        long long doubled_l = half_lower * (pow10(l_size / 2) + 1), doubled_r = half_upper * (pow10(r_size / 2) + 1);
+
+        if (doubled_l < l_bound) {
+            half_lower++;
+        }
+        if (doubled_r > r_bound) {
+            half_upper--;
+        }
+
+        if (half_lower > half_upper) {
+            continue;
+        }
+
+        out += ((half_upper * (half_upper + 1)) - (half_lower * (half_lower - 1))) / 2 * (pow10(r_size / 2) + 1);
     }
+
+    auto end = std::chrono::steady_clock::now();
+    std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us " << '\n';
+
     std::cout << out << '\n';
 }
