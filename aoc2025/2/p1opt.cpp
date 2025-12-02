@@ -27,6 +27,32 @@ long long pow10(int val) {
     return out;
 }
 
+int ceil_log10(long long val) {
+    long long tmp = 1;
+    int count = 0;
+    while (tmp <= val) {
+        tmp *= 10;
+        count++;
+    }
+    return count;
+}
+long long repeat_val(int repeat_count, int repeat_len) {
+    return (pow10(repeat_count * repeat_len) - 1) / (pow10(repeat_len) - 1);
+} 
+long long count_invalid_under(long long val) {
+    int log = ceil_log10(val);
+    long long out = 0;
+    for (int j=1; j<=log / 2; j++) {
+        long long repeat_multiplier = repeat_val(2, j);
+        long long div = (val % repeat_val(2, j) == 0) ? val/repeat_multiplier : (val/repeat_multiplier) + 1;
+        long long min_rep = std::min(div, pow10(j));
+        out += (min_rep + pow10(j - 1) - 1) * (min_rep - pow10(j - 1)) * repeat_multiplier;
+    }
+
+    out /= 2;
+    return out;
+}
+
 int main()
 {
     std::ifstream in("input.txt");
@@ -40,37 +66,8 @@ int main()
     long long out = 0;
     for (std::string range : ranges) {
         std::vector<std::string> bounds = split(range, "-");
-        int l_size = bounds[0].size(), r_size = bounds[1].size();
         long long l_bound = stol(bounds[0]), r_bound = stol(bounds[1]);
-        if (l_size % 2 == 1) {
-            l_bound = pow10(l_size);
-            l_size++;
-        }
-        if (r_size % 2 == 1) {
-            r_bound = pow10(r_size - 1) - 1;
-            r_size--;
-        }
-
-        if (r_bound < l_bound) {
-            continue;
-        }
-
-        long long half_lower = stol(std::to_string(l_bound).substr(0, l_size / 2)), half_upper = stol(std::to_string(r_bound).substr(0, r_size / 2));
-
-        long long doubled_l = half_lower * (pow10(l_size / 2) + 1), doubled_r = half_upper * (pow10(r_size / 2) + 1);
-
-        if (doubled_l < l_bound) {
-            half_lower++;
-        }
-        if (doubled_r > r_bound) {
-            half_upper--;
-        }
-
-        if (half_lower > half_upper) {
-            continue;
-        }
-
-        out += ((half_upper * (half_upper + 1)) - (half_lower * (half_lower - 1))) / 2 * (pow10(r_size / 2) + 1);
+        out += count_invalid_under(r_bound + 1) - count_invalid_under(l_bound);
     }
 
     auto end = std::chrono::steady_clock::now();
