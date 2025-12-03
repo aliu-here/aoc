@@ -38,7 +38,7 @@ int main()
 
     long long out = 0;
     for (std::string line : lines) {
-        out += best(line, 2);
+        out += best(line, 12);
     }
 
     auto end = std::chrono::steady_clock::now();
