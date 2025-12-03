@@ -20,12 +20,17 @@ std::vector<std::string> split(const std::string s, const std::string delimiter)
     return res;
 }
 
+std::vector<long long> pow10_cache = {1};
+
 long long pow10(int val) {
-    long long out = 1;
-    for (int i=0; i<val; i++) {
-        out *= 10;
+    if (pow10_cache.size() > val && pow10_cache[val] != -1) {
+        return pow10_cache[val];
+    } else {
+        long long out = pow10(val - 1) * 10;
+        pow10_cache.resize(val + 1, -1);
+        pow10_cache[val] = out;
+        return out;
     }
-    return out;
 }
 
 std::unordered_set<int> primes = {2};
