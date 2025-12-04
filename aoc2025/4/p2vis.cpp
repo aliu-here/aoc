@@ -129,6 +129,8 @@ int main()
         remove(lines, adj_count, pos, original);
     }
 
+    draw(original);
+
     for (auto line : lines) {
         for (char ch : line) {
             if (ch == 'X') {
