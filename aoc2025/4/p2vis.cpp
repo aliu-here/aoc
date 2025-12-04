@@ -41,11 +41,13 @@ void draw(std::vector<std::vector<int>> pic) {
 }
 
 void remove(std::vector<std::string>& lines, std::vector<std::vector<int>>& grid, std::array<int, 2> loc, std::vector<std::vector<int>>& original, int depth = 0) {
-    if (depth == 0) {
-        grid[loc[0]][loc[1]] = 2;
-    }
     if (lines[loc[0]][loc[1]] == 'X') {
         return;
+    }
+    if (depth == 0) {
+        pic[loc[0]][loc[1]] = 2;
+        original[loc[0]][loc[1]] = 0;
+        draw(pic);
     }
 
     lines[loc[0]][loc[1]] = 'X';
