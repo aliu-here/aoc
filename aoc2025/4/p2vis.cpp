@@ -9,7 +9,7 @@ int framecount = 0;
 
 void draw(std::vector<std::vector<int>> pic) {
     std::ofstream out("render/" + std::to_string(framecount) + ".ppm");
-    out.write("P3\n", 3);
+    out.write("P6\n", 3);
 
     std::string dims = std::to_string(pic.size()) + ' ' + std::to_string(pic[0].size()) + '\n';
     out.write(dims.c_str(), dims.size());
@@ -18,20 +18,25 @@ void draw(std::vector<std::vector<int>> pic) {
 
     for (auto row : pic) {
         for (int pix : row) {
+            unsigned char pixel_data[3];
             switch (pix) {
                 case 0:
-                    out.write("0 0 0\n", 6);
+                    pixel_data[0] = 0;
+                    pixel_data[1] = 0;
+                    pixel_data[2] = 0;
                     break;
                 case 1:
-                    out.write("255 255 255\n", 12);
+                    pixel_data[0] = 255;
+                    pixel_data[1] = 255;
+                    pixel_data[2] = 255;
                     break;
                 default: {
-                             std::string tmp = "0 ";
-                             tmp += std::to_string(255 - 2 * (pix - 2));
-                             tmp += " 0\n";
-                             out.write(tmp.c_str(), tmp.size());
+                             pixel_data[0] = 0;
+                             pixel_data[1] = 255 - 2*(pix - 2);
+                             pixel_data[2] = 0;
                          }
             }
+            out.write((char*)pixel_data, 3);
         }
     }
 
