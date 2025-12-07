@@ -5,6 +5,8 @@
 #include <unordered_set>
 #include <array>
 
+#include "tiles.hpp"
+
 struct pos {
     pos(int inrow, int incol) {
         row = inrow;
@@ -17,32 +19,12 @@ int framecount = 0;
 
 int tile_w = 3, tile_h = 6;
 
-std::vector<std::vector<bool>> splitter = {{0, 1, 0},
-                                           {0, 1, 0},
-                                           {0, 1, 0},
-                                           {1, 1, 1},
-                                           {1, 1, 1},
-                                           {1, 1, 1}};
-
-std::vector<std::vector<bool>> split = {{1, 0, 0},
-                                        {1, 0, 0},
-                                        {1, 1, 0},
-                                        {1, 1, 0},
-                                        {1, 1, 1},
-                                        {1, 1, 1}};
-std::vector<std::vector<bool>> src = {{1, 1, 1},
-                                      {1, 1, 1},
-                                      {1, 1, 1},
-                                      {1, 1, 1},
-                                      {1, 1, 1},
-                                      {1, 0, 1},
-                                      {0, 0, 0}};
 
 void draw(std::vector<std::vector<std::array<unsigned char, 3>>> framebuf) {
     std::ofstream out("render/" + std::to_string(framecount) + ".ppm");
     out.write("P6\n", 3);
 
-    std::string dims = std::to_string(framebuf.size()) + ' ' + std::to_string(framebuf[0].size() * tile_w) + '\n';
+    std::string dims = std::to_string(framebuf[0].size()) + ' ' + std::to_string(framebuf.size()) + '\n';
     out.write(dims.c_str(), dims.size());
 
     out.write("255\n", 4);
@@ -61,9 +43,9 @@ void draw(std::vector<std::vector<std::array<unsigned char, 3>>> framebuf) {
 
 std::vector<std::vector<std::array<unsigned char, 3>>> init_framebuf(std::vector<std::string> grid) {
     std::vector<std::vector<std::array<unsigned char, 3>>> framebuf;
-    framebuf.resize(grid.size());
-    for (auto row : framebuf) {
-        row.resize(grid[0].size());
+    framebuf.resize(grid.size() * tile_h);
+    for (std::vector<std::array<unsigned char, 3>>& row : framebuf) {
+        row.resize(grid[0].size() * tile_w);
     }
 
     for (int i=0; i<grid.size(); i++) {
@@ -74,9 +56,13 @@ std::vector<std::vector<std::array<unsigned char, 3>>> init_framebuf(std::vector
                 for (int tile_x = 0; tile_x < tile_h; tile_x++) {
                     for (int tile_y = 0; tile_y < tile_w; tile_y++) {
                         if (src[tile_x][tile_y]) {
-                            framebuf[offset_vert + tile_x][offset_horiz + tile_y] = {128, 128, 128};
+                            framebuf[offset_vert + tile_x][offset_horiz + tile_y][0] = 128; 
+                            framebuf[offset_vert + tile_x][offset_horiz + tile_y][1] = 128;
+                            framebuf[offset_vert + tile_x][offset_horiz + tile_y][2] = 128;
                         } else {
-                            framebuf[offset_vert + tile_x][offset_horiz + tile_y] = {25, 240, 25};
+                            framebuf[offset_vert + tile_x][offset_horiz + tile_y][0] = 25; 
+                            framebuf[offset_vert + tile_x][offset_horiz + tile_y][1] = 240;
+                            framebuf[offset_vert + tile_x][offset_horiz + tile_y][2] = 25;
                         }
                     }
                 }
@@ -86,10 +72,10 @@ std::vector<std::vector<std::array<unsigned char, 3>>> init_framebuf(std::vector
                 int offset_horiz = tile_w * j;
                 for (int tile_x = 0; tile_x < tile_h; tile_x++) {
                     for (int tile_y = 0; tile_y < tile_w; tile_y++) {
-                        if (src[tile_x][tile_y]) {
-                            framebuf[offset_vert + tile_x][offset_horiz + tile_y] = {200, 200, 25};
-                        } else {
-                            framebuf[offset_vert + tile_x][offset_horiz + tile_y] = {0, 0, 0};
+                        if (splitter[tile_x][tile_y]) {
+                            framebuf[offset_vert + tile_x][offset_horiz + tile_y][0] = 200; 
+                            framebuf[offset_vert + tile_x][offset_horiz + tile_y][1] = 200;
+                            framebuf[offset_vert + tile_x][offset_horiz + tile_y][2] = 25;
                         }
                     }
                 }
@@ -102,10 +88,48 @@ std::vector<std::vector<std::array<unsigned char, 3>>> init_framebuf(std::vector
 
 }
 
-std::vector<std::vector<std::array<unsigned char, 3>>> render_step(std::vector<std::string> grid, std::vector<pos> startposns, std::vector<std::vector<std::array<unsigned char, 3>>>& previous_frame) {
-    std::vector<std::vector<std::array<unsigned char, 3>>> framebuf;
-    {
-        return previous_frame;
+void render(std::vector<std::string>& grid, pos startpos, std::vector<std::vector<int>> metadata) {
+    std::vector<std::vector<std::array<unsigned char, 3>>> framebuf = init_framebuf(grid);
+    int curr_row = 1;
+    for (int vert_level = tile_h + 1; vert_level < grid.size() * tile_h; vert_level++) {
+        for (int tile_idx = 0; tile_idx < grid[0].size(); tile_idx++) {
+            int h_offset = tile_idx * tile_w;
+            if (grid[curr_row][tile_idx] == '|') {
+                std::vector<std::vector<bool>> pattern;
+                if (metadata[curr_row][tile_idx] & 0b100) {
+                     pattern = square;
+                }
+                if (metadata[curr_row][tile_idx] & 0b10) {
+                    pattern = split_r;
+                }
+                if (metadata[curr_row][tile_idx] & 0b01) {
+                    pattern = split_l;
+                }
+
+                if (metadata[curr_row][tile_idx] & 0b10 && metadata[curr_row][tile_idx] & 0b10) {
+                    pattern = split_both;
+                }
+
+                for (int i=0; i<tile_w; i++) {
+                    if (pattern[vert_level % tile_h][i]) {
+                        framebuf[vert_level][h_offset + i][0] = 25;
+                        framebuf[vert_level][h_offset + i][1] = 240;
+                        framebuf[vert_level][h_offset + i][2] = 25;
+                    }
+                }
+            }
+            if (grid[curr_row][tile_idx] == '^' && grid[curr_row][tile_idx - 1] == '|') {
+                for (int i=0; i<tile_w; i++) {
+                    if (!splitter[vert_level % tile_h][i]) {
+                        framebuf[vert_level][h_offset + i][0] = 25;
+                        framebuf[vert_level][h_offset + i][1] = 240;
+                        framebuf[vert_level][h_offset + i][2] = 25;
+                    }
+                }
+            }
+        }
+        curr_row = vert_level / tile_h;
+        draw(framebuf);
     }
 }
 
@@ -118,17 +142,23 @@ int main()
         grid.push_back(line);
     }
 
-    init_framebuf(grid);
-/*
     auto start = std::chrono::steady_clock::now();
 
-    std::vector<pos> beamstarts;
+    std::vector<std::vector<int>> metadata;
+    metadata.resize(grid.size());
+    for (std::vector<int>& row: metadata) {
+        row.resize(grid[0].size(), 0);
+    }
+
+    std::vector<pos> beamstarts; pos orig_pos(0, 0);
     for (int i=0; i<grid[0].size(); i++) {
         if (grid[0][i] == 'S') {
+            orig_pos = pos(0, i);
             beamstarts.push_back(pos(0, i));
             break;
         }
     }
+
 
     int out = 0;
     while (beamstarts.size() > 0) {
@@ -136,6 +166,7 @@ int main()
         for (pos startpos : beamstarts) {
             for (int row = startpos.row; row < grid.size(); row++) {
                 if (grid[row][startpos.col] == '|') {
+                    metadata[row][startpos.col] |= 0b100;
                     break;
                 }
                 if (grid[row][startpos.col] == '^') {
@@ -143,14 +174,17 @@ int main()
                     if (startpos.col > 0) {
                         long long tmp = ((long long)(row) << 32) + (long long)(startpos.col - 1);
                         new_beamstarts.insert(tmp);
+                        metadata[row][startpos.col - 1] |= 0b10;
                     }
                     if (startpos.col < grid.size() - 1) {
                         long long tmp = ((long long)(row) << 32) + (long long)(startpos.col + 1);
                         new_beamstarts.insert(tmp);
+                        metadata[row][startpos.col - 1] |= 0b01;
                     }
                     break;
                 }
                 grid[row][startpos.col] = '|';
+                metadata[row][startpos.col] |= 0b100;
             }
         }
 
@@ -163,9 +197,10 @@ int main()
         }
     }
 
+    render(grid, orig_pos, metadata);
+
 
     auto end = std::chrono::steady_clock::now();
     std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us " << '\n';
     std::cout << out << '\n';
-    */
 }
