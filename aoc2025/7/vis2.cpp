@@ -88,7 +88,7 @@ std::vector<std::vector<std::array<unsigned char, 3>>> init_framebuf(std::vector
     return framebuf;
 }
 
-void render(std::vector<std::string>& grid, pos startpos, std::vector<std::vector<int>> metadata) {
+void render(std::vector<std::string>& grid, std::vector<std::vector<int>> metadata) {
     std::vector<std::vector<std::array<unsigned char, 3>>> framebuf = init_framebuf(grid);
     int curr_row = 1;
     for (int vert_level = tile_h; vert_level < grid.size() * tile_h; vert_level++) {
@@ -131,8 +131,8 @@ void render(std::vector<std::string>& grid, pos startpos, std::vector<std::vecto
                 }
             }
         }
-        draw(framebuf);
     }
+    draw(framebuf);
 }
 
 int main()
@@ -160,8 +160,7 @@ int main()
             break;
         }
     }
-    
-    draw(init_framebuf(grid));
+
 
     int out = 0;
     while (beamstarts.size() > 0) {
@@ -191,6 +190,8 @@ int main()
             }
         }
 
+        render(grid, metadata);
+
         beamstarts.clear();
 
         for (long long val : new_beamstarts) {
@@ -206,9 +207,6 @@ int main()
         }
         std::cout << '\n';
     }
-
-    render(grid, orig_pos, metadata);
-
 
     auto end = std::chrono::steady_clock::now();
     std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us " << '\n';
