@@ -97,18 +97,17 @@ void render(std::vector<std::string>& grid, pos startpos, std::vector<std::vecto
             int h_offset = tile_idx * tile_w;
             if (grid[curr_row][tile_idx] == '|') {
                 std::vector<std::vector<bool>> pattern;
-                if (metadata[curr_row][tile_idx] & 0b100) {
-                     pattern = square;
-                }
                 if (metadata[curr_row][tile_idx] & 0b10) {
                     pattern = split_r;
                 }
                 if (metadata[curr_row][tile_idx] & 0b01) {
                     pattern = split_l;
                 }
-
                 if (metadata[curr_row][tile_idx] & 0b10 && metadata[curr_row][tile_idx] & 0b1) {
                     pattern = split_both;
+                }
+                if (metadata[curr_row][tile_idx] & 0b100) {
+                    pattern = square;
                 }
 
                 for (int i=0; i<tile_w; i++) {
@@ -175,12 +174,14 @@ int main()
                 if (grid[row][startpos.col] == '^') {
                     out++;
                     if (startpos.col > 0) {
-                        long long tmp = ((long long)(row) << 32) + (long long)(startpos.col - 1);
+                        long long tmp = ((long long)(row + 1) << 32) + (long long)(startpos.col - 1);
+                        grid[row][startpos.col - 1] = '|';
                         new_beamstarts.insert(tmp);
                         metadata[row][startpos.col - 1] |= 0b10;
                     }
                     if (startpos.col < grid.size() - 1) {
-                        long long tmp = ((long long)(row) << 32) + (long long)(startpos.col + 1);
+                        long long tmp = ((long long)(row + 1) << 32) + (long long)(startpos.col + 1);
+                        grid[row][startpos.col + 1] = '|'; 
                         new_beamstarts.insert(tmp);
                         metadata[row][startpos.col + 1] |= 0b01;
                     }
@@ -200,8 +201,8 @@ int main()
         }
     }
 
-    for (auto row : metadata){
-        for (int val : row) {
+    for (auto row : metadata) {
+        for (auto val : row) {
             std::cout << val << '\t';
         }
         std::cout << '\n';

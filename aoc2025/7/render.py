@@ -8,7 +8,7 @@ file = open("0.ppm", "r", encoding="latin_1")
 print(file.readline())
 dims = [int(x) for x in file.readline().split()]
 scale_factor = 1080 / max(dims)
-os.system(f"ffmpeg -r 5 -f image2 -i %d.ppm -vf scale=iw*{scale_factor}:ih*{scale_factor} vis1.gif")
+os.system(f"ffmpeg -r 60 -f image2 -i %d.ppm -vf scale=iw*{scale_factor}:ih*{scale_factor} vis1.gif")
 
 os.chdir("..")
 os.system(f"rm -r render/*.ppm")

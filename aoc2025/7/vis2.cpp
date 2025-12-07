@@ -97,18 +97,17 @@ void render(std::vector<std::string>& grid, std::vector<std::vector<int>> metada
             int h_offset = tile_idx * tile_w;
             if (grid[curr_row][tile_idx] == '|') {
                 std::vector<std::vector<bool>> pattern;
-                if (metadata[curr_row][tile_idx] & 0b100) {
-                     pattern = square;
-                }
                 if (metadata[curr_row][tile_idx] & 0b10) {
                     pattern = split_r;
                 }
                 if (metadata[curr_row][tile_idx] & 0b01) {
                     pattern = split_l;
                 }
-
                 if (metadata[curr_row][tile_idx] & 0b10 && metadata[curr_row][tile_idx] & 0b1) {
                     pattern = split_both;
+                }
+                if (metadata[curr_row][tile_idx] & 0b100) {
+                     pattern = square;
                 }
 
                 for (int i=0; i<tile_w; i++) {
@@ -172,26 +171,34 @@ int main()
                     break;
                 }
                 if (grid[row][startpos.col] == '^') {
+                    break;
+                }
+                grid[row][startpos.col] = '|';
+                metadata[row][startpos.col] = 0b100;
+            }
+        }
+
+        render(grid, metadata);
+        for (pos startpos : beamstarts) {
+            for (int row = startpos.row; row < grid.size(); row++) {
+               if (grid[row][startpos.col] == '^') {
                     out++;
                     if (startpos.col > 0) {
-                        long long tmp = ((long long)(row) << 32) + (long long)(startpos.col - 1);
+                        long long tmp = ((long long)(row + 1) << 32) + (long long)(startpos.col - 1);
+                        grid[row][startpos.col - 1] = '|';
                         new_beamstarts.insert(tmp);
                         metadata[row][startpos.col - 1] |= 0b10;
                     }
                     if (startpos.col < grid.size() - 1) {
-                        long long tmp = ((long long)(row) << 32) + (long long)(startpos.col + 1);
+                        long long tmp = ((long long)(row + 1) << 32) + (long long)(startpos.col + 1);
+                        grid[row][startpos.col + 1] = '|'; 
                         new_beamstarts.insert(tmp);
                         metadata[row][startpos.col + 1] |= 0b01;
                     }
                     break;
                 }
-                grid[row][startpos.col] = '|';
-                metadata[row][startpos.col] |= 0b100;
             }
         }
-
-        render(grid, metadata);
-
         beamstarts.clear();
 
         for (long long val : new_beamstarts) {
@@ -200,13 +207,7 @@ int main()
             beamstarts.push_back(pos(row, col));
         }
     }
-
-    for (auto row : metadata){
-        for (int val : row) {
-            std::cout << val << '\t';
-        }
-        std::cout << '\n';
-    }
+    render(grid, metadata);
 
     auto end = std::chrono::steady_clock::now();
     std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us " << '\n';
