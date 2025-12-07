@@ -38,6 +38,8 @@ void draw(std::vector<std::vector<std::array<unsigned char, 3>>> framebuf) {
             out.write((char*)pixel_data, 3);
         }
     }
+
+    framecount++;
 }
 
 
@@ -179,7 +181,7 @@ int main()
                     if (startpos.col < grid.size() - 1) {
                         long long tmp = ((long long)(row) << 32) + (long long)(startpos.col + 1);
                         new_beamstarts.insert(tmp);
-                        metadata[row][startpos.col - 1] |= 0b01;
+                        metadata[row][startpos.col + 1] |= 0b01;
                     }
                     break;
                 }
