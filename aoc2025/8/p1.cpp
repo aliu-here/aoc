@@ -57,7 +57,6 @@ int main()
     std::vector<std::vector<int>> links(posns.size());
     for (int i=0; i<posns.size(); i++) {
         auto link = std::get<1>(squareddists[i]);
-        std::cout << link[0] << ' ' << link[1] << '\n';
         links[link[0]].push_back(link[1]);
         links[link[1]].push_back(link[0]);
     }
@@ -71,11 +70,9 @@ int main()
             continue;
         }
         std::vector<int> to_visit = {i};
-        std::cout << "cycle #: " << cycle_num << '\n';
         do {
             std::vector<int> next_visits;
             for (int val : to_visit) {
-                std::cout << val << ' ';
                 if (box_vals[val] != 0) {
                     continue;
                 }
@@ -83,7 +80,6 @@ int main()
                 cycle_size++;
                 next_visits.insert(next_visits.end(), links[val].begin(), links[val].end());
             }
-            std::cout << '\n';
             to_visit = next_visits;
         } while (to_visit.size() > 0);
         circuits.push_back(cycle_size);
@@ -93,10 +89,6 @@ int main()
 
     std::sort(circuits.begin(), circuits.end(), std::greater<int>());
     out = circuits[0] * circuits[1] * circuits[2];
-    for (int val : circuits) {
-        std::cout << val << ' ';
-    }
-    std::cout << '\n';
         
     auto end = std::chrono::steady_clock::now();
     std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us " << '\n';
